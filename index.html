@@ -27,23 +27,48 @@
         this.point4 = new Point2D(point1.x - size, point1.y);
         this.grey = Math.random()*100 + 50;
     }
+// Two possible ways round way and square way to distribute points.
 
-    let Tiles = function(height, width) {
-        this.tiles = [];
-        let h = height;
-        while (h > 0) {
-            let w = width;
-            let old_tile = new QuadTile(new Point2D(w, h), new Point2D(w, h - 25))
-            this.tiles.push(old_tile)
-            h = h - 25;
-            while (w > 0) {
-                let tile = new QuadTile(old_tile.point4, old_tile.point3);
-                this.tiles.push(tile);
-                old_tile = tile;
-                w = w - (tile.point1.x - tile.point4.x);
+    let points = function(height, width) {
+        this.points = [];
+        let h = 0;
+        while (h <= window.screen.availHeight) {
+            let w = 0;
+            h = Math.random()*50 + h;
+            while (w <= window.screen.availWidth) {
+                w = Math.random()*50 + w;
+                this.points.push(Point2D(w, h))
             }
         }
+        return this.points
     }
+    // First we want to just draw a square.
+    let tiles = function(height, width, context) {
+        tile_points = points(window.screen.availHeight, window.screen.availWidth)
+
+        tile_points.every((point, i, points) => {
+            // BUG todo fix x and y.
+            context.fillRect(point.x, point.y, 10, 10)
+        })
+    }
+
+    // OLD TILE METHOD
+    // let Tiles = function(height, width) {
+    //     this.tiles = [];
+    //     let h = height;
+    //     while (h > 0) {
+    //         let w = width;
+    //         let old_tile = new QuadTile(new Point2D(w, h), new Point2D(w, h - 25))
+    //         this.tiles.push(old_tile)
+    //         h = h - 25;
+    //         while (w > 0) {
+    //             let tile = new QuadTile(old_tile.point4, old_tile.point3);
+    //             this.tiles.push(tile);
+    //             old_tile = tile;
+    //             w = w - (tile.point1.x - tile.point4.x);
+    //         }
+    //     }
+    // }
 
     function loadFile(filePath) {
         var result = null;
@@ -84,39 +109,59 @@
     let picCanvas = document.getElementById("picCanvas");
     let height = document.documentElement.clientHeight;
     let width = document.documentElement.clientWidth;
-    let mosaic = new Tiles(height, width);
+   // let mosaic = new Tiles(height, width);
     console.log(picCanvas)
-    let horse = new PictureTiles();
-    console.log(mosaic)
+   // let horse = new PictureTiles();
 
-    let do_once = function loop() {
 
-        window.requestAnimationFrame(loop);
+   let initialize = function() {
 
-        height = document.documentElement.clientHeight;
-        width = document.documentElement.clientWidth;
-        context.canvas.height = height;
-        context.canvas.width = width;
 
-        context.fillStyle = "#202020";
-        context.fillRect(0, 0, width, height);
+       height = document.documentElement.clientHeight;
+       width = document.documentElement.clientWidth;
 
-        context.strokeStyle = "#f0f0f0";
+       context.canvas.height = height;
+       context.canvas.width = width;
 
-        for(let index = mosaic.tiles.length - 1; index > -1; index--) {
-            context.fillStyle = `rgb(${mosaic.tiles[index].grey}, ${mosaic.tiles[index].grey}, ${mosaic.tiles[index].grey})`;
-            context.beginPath();
-            context.moveTo(mosaic.tiles[index].point1.x, mosaic.tiles[index].point1.y);
-            context.lineTo(mosaic.tiles[index].point2.x, mosaic.tiles[index].point2.y);
-            context.lineTo(mosaic.tiles[index].point3.x, mosaic.tiles[index].point3.y);
-            context.lineTo(mosaic.tiles[index].point4.x, mosaic.tiles[index].point4.y)
-            context.closePath();
-            context.fill();
-            context.stroke();
-        }
+       context.fillStyle = "#202020";
+       context.strokeStyle = "#f0f0f0";
 
-    }
-   // do_once()
+       context.fillRect(500,500,200,200);
+
+       tiles(height, width, context);
+   }
+
+   // OLD INITIALIZATION
+   //  let do_once = function loop() {
+   //
+   //      window.requestAnimationFrame(loop);
+   //
+   //      height = document.documentElement.clientHeight;
+   //      width = document.documentElement.clientWidth;
+   //      context.canvas.height = height;
+   //      context.canvas.width = width;
+   //
+   //      context.fillStyle = "#202020";
+   //      context.fillRect(0, 0, width, height);
+   //
+   //      context.strokeStyle = "#f0f0f0";
+   //
+   //      for(let index = mosaic.tiles.length - 1; index > -1; index--) {
+   //          context.fillStyle = `rgb(${mosaic.tiles[index].grey}, ${mosaic.tiles[index].grey}, ${mosaic.tiles[index].grey})`;
+   //          context.beginPath();
+   //          context.moveTo(mosaic.tiles[index].point1.x, mosaic.tiles[index].point1.y);
+   //          context.lineTo(mosaic.tiles[index].point2.x, mosaic.tiles[index].point2.y);
+   //          context.lineTo(mosaic.tiles[index].point3.x, mosaic.tiles[index].point3.y);
+   //          context.lineTo(mosaic.tiles[index].point4.x, mosaic.tiles[index].point4.y)
+   //          context.closePath();
+   //          context.fill();
+   //          context.stroke();
+   //      }
+   //
+   //  }
+   // // do_once()
+
+    initialize()
 
 </script>
 
